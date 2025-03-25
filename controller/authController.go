@@ -54,6 +54,7 @@ func Register(c *fiber.Ctx) error {
 	user := models.User{
 		UserName: data["user_name"].(string),
 		Email:     strings.TrimSpace(data["email"].(string)),
+		Phone: data["phone"].(string),
 	}
 
 	// Set the password after processing it (assuming SetPassword hashes it)
