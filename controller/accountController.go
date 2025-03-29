@@ -63,3 +63,36 @@ func AddAccount(c *fiber.Ctx)error{
 	
 	
 }
+
+
+func GetAccounts(c *fiber.Ctx) error {
+	var data map[string]interface{}
+
+	// Parse the body of the request
+	if err := c.BodyParser(&data); err != nil {
+		fmt.Println("Unable to parse body")
+	}
+
+	var accounts []models.Account
+
+	// Enable query logging with Debug() to print SQL in the terminal
+	if err := database.DB.Debug().Where("user_id = ?", data["userId"]).Find(&accounts).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"message": "Error fetching accounts",
+			"error":   err.Error(),
+		})
+	}
+
+
+	// Check if any accounts are found
+	if len(accounts) == 0 {
+		return c.Status(404).JSON(fiber.Map{
+			"message": "No accounts found for this user",
+		})
+	}
+
+	// Return the accounts
+	return c.Status(200).JSON(fiber.Map{
+		"accounts": accounts,
+	})
+}
