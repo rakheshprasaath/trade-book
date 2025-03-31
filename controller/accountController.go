@@ -38,19 +38,26 @@ func AddAccount(c *fiber.Ctx)error{
 	if err != nil {
 		fmt.Println("Error encrypting:", err)
 	}
-	
+	fmt.Println("checking.....")
 
 	account := models.Account{
 		UserId: data["userId"].(string),
-		AccountId: encryptedValue,
+		AccountKey: encryptedValue,
 		AccountNumber: data["accountNumber"].(string),
 		Password: data["password"].(string),
 		Server: data["server"].(string),
 	}
+	fmt.Println("checking.....")
 
 	result := database.DB.Create(&account)
-	if result != nil {
-		log.Println(result)
+	if result.Error != nil {
+		log.Println(result.Error)
+		c.Status(500)
+	return c.JSON(fiber.Map{
+		"error": result.Error,
+	})
+		
+
 	}
 
 	c.Status(200)
