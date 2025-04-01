@@ -133,3 +133,94 @@ func GetCurrentPositionsByAccountKey(c *fiber.Ctx) error {
 		"positions": positions,
 	})
 }
+
+
+func GetHistoryPositionsByAccountKey(c *fiber.Ctx) error {
+	accountKey := c.Params("accountKey") // Get account_key from the route parameter
+
+	var positions []models.HistoryPosition
+
+	// Query database for history positions with the given accountKey in descending order
+	if err := database.DB.Debug().
+		Where("account_key = ?", accountKey).
+		Order("time_entry DESC").
+		Find(&positions).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"message": "Error fetching history positions",
+			"error":   err.Error(),
+		})
+	}
+
+	// Check if any positions are found
+	if len(positions) == 0 {
+		return c.Status(404).JSON(fiber.Map{
+			"message": "No history positions found for this account key",
+		})
+	}
+
+	// Return the positions
+	return c.Status(200).JSON(fiber.Map{
+		"positions": positions,
+	})
+}
+
+
+func GetHistoryOrdersByAccountKey(c *fiber.Ctx) error {
+	accountKey := c.Params("accountKey") // Get account_key from the route parameter
+
+	var orders []models.HistoryOrder
+
+	// Query database for history orders with the given accountKey in descending order by time_entry
+	if err := database.DB.Debug().
+		Where("account_key = ?", accountKey).
+		Order("time_entry DESC").
+		Find(&orders).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"message": "Error fetching history orders",
+			"error":   err.Error(),
+		})
+	}
+
+	// Check if any orders are found
+	if len(orders) == 0 {
+		return c.Status(404).JSON(fiber.Map{
+			"message": "No history orders found for this account key",
+		})
+	}
+
+	// Return the orders
+	return c.Status(200).JSON(fiber.Map{
+		"orders": orders,
+	})
+}
+
+
+func GetHistoryDealsByAccountKey(c *fiber.Ctx) error {
+	accountKey := c.Params("accountKey") // Get account_key from the route parameter
+
+	var deals []models.HistoryDeal
+
+	// Query database for history deals with the given accountKey in descending order by time_entry
+	if err := database.DB.Debug().
+		Where("account_key = ?", accountKey).
+		Order("time_entry DESC").
+		Find(&deals).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"message": "Error fetching history deals",
+			"error":   err.Error(),
+		})
+	}
+
+	// Check if any deals are found
+	if len(deals) == 0 {
+		return c.Status(404).JSON(fiber.Map{
+			"message": "No history deals found for this account key",
+		})
+	}
+
+	// Return the deals
+	return c.Status(200).JSON(fiber.Map{
+		"deals": deals,
+	})
+}
+

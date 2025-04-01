@@ -11,4 +11,8 @@ func Setup(app *fiber.App){
 	app.Post("/api/addAccount", controller.AddAccount)
 	app.Get("/api/getAccounts", controller.GetAccounts)
 	app.Get("/api/currentPositions/:accountKey", controller.GetCurrentPositionsByAccountKey)
+	app.Get("/api/historyPositions/:accountKey", controller.GetHistoryPositionsByAccountKey)
+	app.Get("/api/history_orders/:accountKey", controller.GetHistoryOrdersByAccountKey)
+
+
 }
