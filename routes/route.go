@@ -10,5 +10,5 @@ func Setup(app *fiber.App){
 	app.Post("/api/login", controller.Login)
 	app.Post("/api/addAccount", controller.AddAccount)
 	app.Get("/api/getAccounts", controller.GetAccounts)
-
+	app.Get("/api/currentPositions/:accountKey", controller.GetCurrentPositionsByAccountKey)
 }

@@ -103,3 +103,38 @@ func GetAccounts(c *fiber.Ctx) error {
 		"accounts": accounts,
 	})
 }
+
+
+func GetCurrentPositionsByAccountKey(c *fiber.Ctx) error {
+	var data map[string]interface{}
+
+	// Parse the body of the request
+	if err := c.BodyParser(&data); err != nil {
+		fmt.Println("Unable to parse body")
+	}
+
+	var positions []models.CurrentPosition
+
+	// Query database for positions with the given accountKey in descending order
+	if err := database.DB.Debug().
+		Where("account_key = ?", data["accountKey"]).
+		Order("time DESC").
+		Find(&positions).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"message": "Error fetching current positions",
+			"error":   err.Error(),
+		})
+	}
+
+	// Check if any positions are found
+	if len(positions) == 0 {
+		return c.Status(404).JSON(fiber.Map{
+			"message": "No positions found for this account key",
+		})
+	}
+
+	// Return the positions
+	return c.Status(200).JSON(fiber.Map{
+		"positions": positions,
+	})
+}
